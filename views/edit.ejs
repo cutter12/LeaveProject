@@ -1,0 +1,16 @@
+<%- include('partials/header.ejs') %>
+
+<% value.forEach(el=>{ %>
+<form action="/edit/<%= el.ID %>?_method=PUT" method="POST">
+    <label for="">NAME</label>
+    <input type="text" value="<%= el.fname %>" name="fname">
+    <label for="">SURNAME</label>
+    <input type="text" value="<%= el.lname %>" name="lname">
+    <input type="submit" value="UPDATE">
+</form>    
+
+
+<% }) %>
+
+<a href="/">back to main</a>
+<%- include('partials/footer.ejs') %>

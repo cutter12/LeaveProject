@@ -1,0 +1,126 @@
+
+
+</body>
+<script>
+
+
+
+new Vue({
+    el:'#app',
+    data:{
+        
+        picked:'full_day',
+        value:[],
+        picked:'',
+        select_name:'',
+        member:[],
+        check:'',
+        date:[],
+        id:'เลือก',
+        attendance_year:'2020',
+        pending:'',
+        approved:'',
+        year:'',
+        htmlContent:10,
+        tableToggle:true,
+        leaveType:[
+            {id:'01',desc:'ลาป่วย (มีใบรับรองแพทย์)'},
+            {id:'02',desc:'ลาป่วย (ไม่มีใบรับรองแพทย์)'},
+            {id:'03',desc:'ลากิจ'},
+            {id:'04',desc:'ลาพักร้อน'},
+            {id:'05',desc:'มาสาย'},
+            {id:'06',desc:'ขาดงาน'},
+            {id:'07',desc:'ลาอื่นๆ'},
+            {id:'08',desc:'ลาคลอด'},
+        ],
+        checked:'',
+        emp_name:[],
+        
+    },
+    mounted(){
+        this.attendanceByYear();
+    },
+    methods:{
+        
+        selectDate:function(id,year){
+            fetch(`/member/${id}/${year}`)
+            .then(response => response.json())
+            .then(data => {
+
+                this.date = data;
+
+            });
+        },
+        changePage:function(){
+            setTimeout(function(){
+                window.location = '/memberBody';
+            },3000)
+        },
+        showWindow:function(){
+            window.open('/upload','window','toolbar=no, menubar=no, resizable=no,height=150,width=800');
+        },
+        attendanceByYear:function(){
+            fetch(`/member_section`)
+            .then(response => response.json())
+            .then(dataByYear=>{
+                console.log(dataByYear);
+                this.emp_name = dataByYear;
+            });
+        }
+        
+    }
+})
+
+
+new Vue({
+    el:'#vue_login',
+    data:{
+        
+        position_checked:'',
+        employee_id:'',
+        mg_disable:true,
+        emp_disable:true,
+        text:'',
+        mg_checked:false,
+        emp_checked:false
+    },
+    mounted(){
+
+    },
+    methods:{
+        focusoutAlert:function(){
+            if(this.text === '1034' || this.text === '1038' || this.text === '1047' || this.text === '1003' || this.text === '1006' || this.text === '1061' || this.text === '1062' || this.text === '1087' || this.text === '1088' ){
+                this.mg_disable = false;
+                this.emp_disable = false;
+                this.emp_checked = false;
+            }else if(this.text === ''){
+                this.mg_disable = true;
+                this.emp_disable = true;
+                this.emp_checked = false;
+            }else{
+                this.mg_disable = true;
+                this.emp_disable = false;
+                this.emp_checked = true;
+            }
+        }
+    }
+})
+
+// new Vue({
+//     el:'#app',
+//     data:{
+//         picked:'full_day',
+//         check:[]
+//     },
+//     methods:{
+       
+        
+//     },
+//     computed:{
+
+//     }
+// })
+
+
+</script>
+</html>

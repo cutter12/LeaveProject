@@ -1,0 +1,223 @@
+
+<html>
+  <head>
+<title>รายงานค่าเบี้ยเลี้ยงเดินต่างจังหวัด / ต่างประเทศ ( Provincial / Overseas Allowance Report Sheet )</title>
+   <style>
+    body {font-family:Microsoft Sans Serif ,MS Sans Serif ,Arial ,CordiaUPC ; font-size: 13px }
+    b {font-family:Microsoft Sans Serif ,MS Sans Serif ,Arial ,CordiaUPC ; font-size: 15px}
+    li,td {font-family : Microsoft Sans Serif , Arial ; font-size : 13px}
+    a.noline {COLOR: #ffffcc; TEXT-DECORATION: none	}
+    a.noline:hover {	COLOR: #99cc99}
+    a.cate {text-decoration:none; color: #FFFFFF;}
+    a.cate:hover {color:"EE9935";}
+    a.menu {text-decoration:none; color: "#6600FF";}
+    a:hover {color:"#FF6600"}
+    a.shop {color: "#6600FF";}
+    a.shop:hover {color:"#FF6600";}
+    img {border: 0px;vertical-align:middle;}
+      .style8 {	color: #006699;
+font-weight: bold;
+}
+      .style11 {
+color: #006699;
+font-size: 18px;
+}
+.style13 {color: #006699; font-weight: bold; font-size: 16; }
+      .style14 {color: #000000; font-weight: bold; font-size: 16; }
+      .style15 {color: #666666; font-weight: bold; font-size: 16; }
+      .style12 {font-size: 16px}
+      .style17 {font-weight: bold; color: #000000;}
+      .style18 {
+font-size: 14px;
+font-weight: bold;
+}
+.style19 {font-size: 14px; }
+      .style20 {color: #000000}
+      .style21 {font-size: 18px}
+      </style>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-874">
+<script language="Javascript1.2">
+
+</script>
+</head>
+<body leftMargin=0 topMargin=0 marginheight="0" marginwidth="0">
+<div align="center"><br />
+<table width="500" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><div align="center" class="style11">
+      <% var parseType = [
+      {id:'01',desc:'ลาป่วย (มีใบรับรองแพทย์)'},
+      {id:'02',desc:'ลาป่วย (ไม่มีใบรับรองแพทย์)'},
+      {id:'03',desc:'ลากิจ'},
+      {id:'04',desc:'ลาพักร้อน'},
+      {id:'05',desc:'มาสาย'},
+      {id:'06',desc:'ขาดงาน'},
+      {id:'07',desc:'ลาอื่นๆ'},
+      {id:'08',desc:'ลาคลอด'}] 
+    
+      var minus = emp_data[0].leave_log_type - 1;
+  %>
+  </div></td>
+  </tr>
+  <tr>
+    <td height="25"><div align="center" class="style13">Thai Furukawa Unicomm Engineering Co., Ltd. </div></td>
+  </tr>
+  <tr>
+    <td height="25"><div align="center" class="style14">รายงานการขออนุญาติลา </div></td>
+  </tr>
+  <tr>
+    <td height="25"><div align="center" class="style15">Leave Request Report </div></td>
+  </tr>
+</table>
+<br>
+<table width="600" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td class="style12"><div align="center"><span class="style18">ประเภทการลา</span><span class="style19"> / Leave Type</span><span class="style18"> :
+      <%= parseType[minus].desc %>
+                </span></div></td>
+  </tr>
+</table>
+<br>
+</div>
+
+<table width="900" border="0" align="center" cellpadding="0" cellspacing="0" bordercolor="#F0F0F0">
+  <tr>
+    <td height="30"><div align="left"><strong>แผนกที่ขอลา</strong> Section to Leave Request<span class="style8">
+      <u><%= emp_data[0].leave_log_section %></u> <!-- จุดแรก -->
+    </span></div></td>
+    <td height="30">&nbsp;</td>
+    <td height="30">&nbsp;</td>
+  </tr>
+  <tr>
+    <td height="30"><div align="left"><strong>หัวหน้าแผนก (ผู้อนุมัติ)</strong> Section Head :<span class="style8">
+      <u><%= mg_data[0].Name_Th %></u> <!-- จุดสาม -->
+    </span></div></td>
+    <td height="30">&nbsp;</td>
+    <td height="30">&nbsp;</td>
+  </tr>
+  <tr>
+    <td height="30" colspan="3"><div align="left"><strong>รายละเอียดการลา</strong> Leave Request Detail: <span class="style8">
+      <u><%= emp_data[0].leave_log_detail %></u> <!-- จุดสอง -->
+    </span></div></td>
+  </tr>
+  <%
+    var a = moments(emp_data[0].leave_log_date_start);
+    var b = moments(emp_data[0].leave_log_date_end);
+    var day_count = b.diff(a,'days')+1;
+  %>
+  <tr>
+    <td height="30" colspan="3"><div align="left"><strong> ระยะเวลาในการลา</strong>  Leave Period <strong>ระหว่างวันที่  </strong> <%= moments(emp_data[0].leave_log_date_start).format("DD/MM/YYYY") %> ถึงวันที่ <%= moments(emp_data[0].leave_log_date_end).format("DD/MM/YYYY") %><strong> รวมจำนวนวัน / </strong>Total Days : <span class="style8"> <u> <!-- จุดสอง -->
+      <%= day_count %> วัน
+    </u> </span></div></td>
+  </tr>
+</table>
+<table width="900" border="1" align="center" cellpadding="0" cellspacing="0" bordercolor="#F0F0F0">
+  <tr>
+    <td bordercolor="#CCCCCC" bgcolor="#FFFFCC"><div align="center"><strong>ลำดับ<br />
+    </strong>(No.)</div></td>
+    <td bordercolor="#CCCCCC" bgcolor="#FFFFCC"><div align="center"><strong>รหัส<br />
+    </strong>(Emp ID) </div></td>
+    <td bordercolor="#CCCCCC" bgcolor="#FFFFCC"><div align="center"><strong>ชื่อ-นามสกุล<br />
+    </strong>(Employees Namelist)</div></td>
+    <td bordercolor="#CCCCCC" bgcolor="#FFFFCC"><div align="center"><strong>แผนก<br />
+    </strong>(Section)</div></td>
+    <td bordercolor="#CCCCCC" bgcolor="#FFFFCC"><div align="center"><strong>ประเภทการลา<br />
+    </strong>(Unit)</div></td>
+    <td bordercolor="#CCCCCC" bgcolor="#FFFFCC"><div align="center"><strong>จำนวนวันลา<br />
+    </strong>(Unit)</div></td>
+    <td bordercolor="#CCCCCC" bgcolor="#FFFFCC"><div align="center"><strong>สถานะ<br />
+    </strong>(Unit)</div></td>
+  </tr>
+  <tr>
+    <td bordercolor="#CCCCCC"><div align="center" class="style8">1</div></td>
+    <td bordercolor="#CCCCCC"><div align="center" class="style8">
+        <%= emp_data[0].emp_id %>
+    </div></td>
+    <td bordercolor="#CCCCCC"><div align="center" class="style8">
+        <div align="left">
+          <%= emp_data[0].Name_Th %>
+      </div>
+    </div></td>
+    <td bordercolor="#CCCCCC"><div align="center" class="style8">
+        <div align="left">
+          <%= emp_data[0].leave_log_section %>
+      </div>
+    </div></td>
+    <td bordercolor="#CCCCCC"><div align="center" class="style8">
+        <div align="left">
+          <%= parseType[minus].desc %>
+      </div>
+    </div></td>
+    <td bordercolor="#CCCCCC"><div align="center" class="style8">
+      <%= day %>
+    </div></td>
+    <td bordercolor="#CCCCCC"><div align="center" class="style8">
+  รอการอนุมัติ
+    </div></td>
+    
+  </tr>
+</table>
+<br>
+<table width="900" border="1" align="center" cellpadding="0" cellspacing="0" bordercolor="#CDCDCD">
+  <tr>
+    <td bgcolor="#CCFFCC"><div align="center"><strong>เตรียมงานโดย</strong><br />
+    Arranged by </div></td>
+    <td bgcolor="#CCFFCC"><div align="center"><strong>อนุมัติ</strong><br />
+    Approved by </div></td>
+    <td bgcolor="#CCFFCC"><div align="center"></div>
+        <div align="center"><strong>รับรอง</strong><br />
+    Acknowledged by </div></td>
+    <td bgcolor="#CCFFCC"><div align="center"><strong>ตรวจสอบ</strong><br />
+    Verified by </div></td>
+    <td bgcolor="#CCFFCC"><div align="center"><strong>บันทึกข้อมูล</strong><br />
+    Recorded by </div></td>
+  </tr>
+  <tr>
+    <td><div align="center">
+        <table width="170" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td>&nbsp;</td>
+          </tr>
+        </table>
+      <span class="style2">..............................................<br>
+    </span><strong>หัวหน้างาน</strong></div></td>
+    <td><div align="center">
+        <table width="170" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td>&nbsp;</td>
+          </tr>
+        </table>
+      <span class="style2">.......................................<br>
+        <strong>ผู้จัดการแผนก</strong><br>
+    </span></div></td>
+    <td><div align="center">
+        <table width="170" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td>&nbsp;</td>
+          </tr>
+        </table>
+      <span class="style2">.......................................<br>
+        <strong>ผู้จัดการทั่วไป / ผู้อำนวยการฯ</strong></span></div></td>
+    <td><div align="center">
+        <table width="170" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td>&nbsp;</td>
+          </tr>
+        </table>
+      <span class="style2">.......................................<br>
+        <strong>ผู้จัดการแผนกบุคคลฯ</strong></span></div></td>
+    <td><div align="center">
+        <table width="170" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td>&nbsp;</td>
+          </tr>
+        </table>
+      <span class="style2">.......................................<br>
+        <strong>พนักงานแผนกบุคคลฯ</strong></span></div></td>
+  </tr>
+</table>
+<div align="center"><strong><a href="javascript:printWindow()"><br>
+<img src="/stationery/images/print_icon.gif" width="49" height="17" border="0"></a><img src="/image/none.gif" width="20" height="2" /><a href="JavaScript:window.close()"><img src="/allowance/image/close.png"></a></strong></div>
+<h3><a href="http://localhost:3000">Login เข้าสู่ระบบเพื่อตรวจสอบคำขอลาและอนุมัติ</a></h3>
+</body>
+</html>

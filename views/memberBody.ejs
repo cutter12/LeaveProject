@@ -1,0 +1,437 @@
+<%- include('partials/header.ejs') %>
+<nav class="navbar navbar-expand-lg navbar-light navbar-laravel">
+    <div class="container">
+        <a class="navbar-brand" href="#">LEAVEONLINE</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link btn btn-danger text-light" href="/logout">ออกจากระบบ</a>
+                </li>
+            </ul>
+
+        </div>
+    </div>
+</nav>
+<div class="container" id="app">
+
+    <%
+        var leavePuay = 30;
+        var leaveKit = 7; 
+        var summerLeave = 0;
+        var a = moments([]); 
+        var b = moments(value[0].BeginWork_Date); 
+        var years = a.diff(b,'year') 
+        b.add(years,'years') 
+        var months = a.diff(b,'month') 
+        b.add(months,'months') 
+        var days = a.diff(b,'day') 
+        b.add(days,'days') 
+
+        if(years < 1){
+            summerLeave = 0;
+        }else if(years >= 1 && years <= 3){
+            summerLeave = 6;
+        }else if(years >= 4 && years <= 6){
+            summerLeave = 12;
+        }else{
+            summerLeave = 14;
+        }
+
+
+        
+
+    %>
+    
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card shadow bg-seconday text-dark">
+                <div class="card-header m-0"><h6><i class="far fa-address-card"></i> ข้อมูลผู้เข้าระบบ <%= moments().format("LL");%> - <%= moments().format('LT');%></h6> </div>
+                <div class="card-body">
+                    <strong>รหัสพนักงาน</strong><span> <%= value[0].Emp_ID %> </span> <strong>ชื่อ</strong><span> <%= value[0].Name_Th %></span><strong> แผนก</strong><span> <%= value[0].Section_Desc %></span><strong> อายุงาน </strong><span><%= years%> ปี <%= months %> เดือน <%= days %> วัน</span>
+                    <br><br>
+                    
+                    <div><strong>สิทธิ์ในการลา | </strong><span>ลาป่วยเหลือ: <%= leavePuay %> วัน </span><span>ลากิจเหลือ: <%= leaveKit %> วัน </span><span>ลาพักร้อนเหลือ: <%= summerLeave %> วัน</span>
+                        
+                   
+                </div>
+                </div>
+            </div>  
+        </div>
+    </div>
+    <div class="row mt-2">
+        <div class="col-md-4">
+            <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo"><i class="fas fa-file-signature"></i> เพิ่มคำขอลา</button>
+        </div>
+        <div class="col-md-4"></div>
+        <div class="col-md-4"></div>
+    </div>
+    <% var pending_count = 0; %>
+    <% var approved_count = 0; %>
+    <% var unapprove = 0; %>
+    <% value.forEach(el1 => { %>
+        <% if(el1.leave_log_status === 'pending') { %>
+            
+            <% pending_count += 1; %>
+
+        <% }else if(el1.leave_log_status === 'approved') { %>
+
+            <% approved_count += 1 %>
+
+        <% }else{ %>
+
+        <% unapprove += 1; %>
+
+        <% } %>
+    <% }) %>
+    <div class="row mt-3">
+        <div class="col-md-4">
+            <div class="card shadow bg-info text-white" v-on:click="tableToggle = true">
+                <div class="card-header"><h4><i class="fas fa-sync"></i> รอการอนุมัติ </h4></div>
+                <div class="card-body">
+                    
+                    <h4 class="text-right m-0">จำนวน <%= pending_count %></h4>
+                </div>
+            </div>  
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow bg-success text-white" v-on:click="tableToggle = false">
+                <div class="card-header"><h4><i class="far fa-check-circle"></i> อนุมัติ</h4></div>
+                <div class="card-body">
+                    
+                    <h4 class="text-right m-0">จำนวน <%= approved_count; %></h4>
+                </div>
+            </div>  
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow bg-danger text-white">
+                <div class="card-header"><h4><i class="	far fa-edit"></i> ไม่อนุมัติ</h4></div>
+                <div class="card-body">
+                    
+                    <h4 class="text-right m-0">จำนวน <%= unapprove %></h4>
+                </div>
+            </div>  
+        </div>
+    </div>
+
+
+
+<% if(value.length !== 0) { %>
+<div class="row">
+    <div class="col-md-12 mt-2">
+    <template v-if="tableToggle">
+    
+        <div class="card shadow bg-seconday text-dark">
+            <div class="card-body">
+            <table class="table table-bordered mt-2 table-sm shadow-sm">
+                <thead>
+                    
+                    <th>ผู้ลา</th>
+                    <th>วันที่ทำรายการ</th>
+                    <th>ประเภทการลา</th>
+                    <th>วันที่ลา</th>
+                    <th>จำนวนวันลา</th>
+                    <th>สถานะ</th>
+                    <th>อื่นๆ</th>
+                </thead>
+                <tbody>
+                
+                    <% value.forEach(el => { %>
+                        <% if(el.leave_log_status === 'pending'){ %>
+                        <%
+                            var a = moments(el.leave_log_date_start);
+                            var b = moments(el.leave_log_date_end);
+                            var day_count = b.diff(a,'days')+1;
+                        %>
+                        <tr>
+                        
+                            <td><%= el.Name_Th %></td>
+                            <td><%= moments(el.leave_log_datestamp).format("DD/MM/YYYY"); %></td>
+                            <% var log_type1 = el.leave_log_type - 1; %>
+                            <td>{{leaveType[<%= log_type1 %>].desc}} </td>
+                            <td><%= moments(el.leave_log_date_start).format("DD/MM/YYYY"); %> - <%= moments(el.leave_log_date_end).format("DD/MM/YYYY"); %></td>
+                            <td><%= day_count %></td>
+                            <td><button class="btn btn-small btn-warning"><%= el.leave_log_status === 'pending' ? 'รออนุมัติ' : 'อนุมัติแล้ว' %></button></td>
+                            <td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal<%= el.leave_log_id %>"><i class="fas fa-exclamation-circle"></i> ข้อมูลเพิ่มเติม</button>
+                                
+                                <div class="modal fade" id="myModal<%= el.leave_log_id %>">
+                                    <div class="modal-dialog">
+                                      <div class="modal-content">
+                                  
+                                        <!-- Modal Header -->
+                                        <div class="modal-header">
+                                          <h4 class="modal-title"><i class="far fa-file"></i> รายละเอียดของคำขอ อนุมัติลา</h4>
+                                          <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        </div>
+                                        
+                                        <!-- Modal body -->
+                                        <div class="modal-body">
+                                          <p><i class="far fa-user"></i> &nbsp;ชื่อ สกุล&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;<%= el.Name_Th %></p>
+                                          <hr class="mt-0">
+                                          <p><i class="fas fa-user-check"></i> ประเภทการลา&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;{{leaveType[<%= log_type1 %>].desc}}</p>
+                                          <hr class="mt-0">
+                                          <p><i class="far fa-address-book"></i> แผนก&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;<%= el.Section_Desc %></p>
+                                          <hr class="mt-0">
+                                          <p><i class="far fa-file"></i> เหตุผลการลา&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;<%= el.leave_log_detail %></p>
+                                          <hr class="mt-0">
+                                          
+                                          <p><i class="far fa-calendar-alt"></i> วันที่&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp; <%=moments(el.leave_log_date_start).format("DD/MM/YYYY");  %> - <%= moments(el.leave_log_date_end).format("DD/MM/YYYY"); %></p>
+                                          
+                                          <hr class="mt-0">
+                                          <p><i class="far fa-calendar-plus"></i> จำนวนวันลา&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;<%= day_count %> วัน</p>
+                                          <hr class="mt-0">
+                                          <p><i class="fas fa-mobile-alt"></i> &nbsp;การติดต่อ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;</p>
+                                          <hr class="mt-0">
+                                          <p><i class="fas fa-circle-notch"></i> สถานะ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;<span class="btn btn-warning"><%= el.leave_log_status === 'pending' ? 'รออนุมัติ' : 'อนุมัติแล้ว' %></span></p>
+                                          <hr class="mt-0">
+                                          <p><i class="fas fa-upload"></i> ไฟล์แนบ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;<span class="btn btn-danger btn-sm ">
+                                              <% if(el.leave_log_img === 'no_picture'){ %>
+                                                ไม่มีไฟล์แนบ
+                                              <% }else { %>
+                                                <a href="/upload_image/<%= el.leave_log_img %>" target="_blank" style="color:white;text-decoration: none;">ดาวโหลดไฟล์แนบ</a>
+                                              <% } %>
+                                          </span></p>
+                                        </div>
+                
+                                      </div>
+                                    </div>
+                                  </div></td>
+                        </tr>
+                        
+                    <% }%> <!-- Else -->
+    
+                    <% }); %>
+                </tbody>
+            </table>
+            </div> <!-- card body -->
+            
+            
+            </div> <!-- card  -->
+        
+    </template>
+
+
+
+<!-- --------------------------------------------------------- --------------------------------------------------------- --------------------------------------------------------- -->
+    
+    <template v-else>
+        <div class="card shadow bg-seconday text-dark">
+        <div class="card-body">
+        <table class="table table-bordered mt-2 table-sm shadow-sm">
+            <thead>
+                
+                <th>วันที่ทำรายการ</th>
+                <th>ผู้ลา</th>
+                <th>ประเภทการลา</th>
+                <th>วันที่ลา</th>
+                <th>จำนวนวัน</th>
+                <th>สถานะ</th>
+                <th>อื่นๆ</th>
+            </thead>
+            <tbody>
+            
+                <% value.forEach(el2 => { %>
+                    <% if(el2.leave_log_status === 'approved'){ %>
+                    <%
+                        var a = moments(el2.leave_log_date_start);
+                        var b = moments(el2.leave_log_date_end);
+                        var day_count = b.diff(a,'days')+1;
+                    %>
+                    <tr>
+                        <td><%= moments(el2.leave_log_datestamp).format("DD/MM/YYYY"); %></td>
+                        <td><%= el2.Name_Th %></td>
+                        <% var log_type2 = el2.leave_log_type - 1; %>
+                        <td>{{leaveType[<%= log_type2 %>].desc}}</td>
+                        <td><%= moments(el2.leave_log_date_start).format("DD/MM/YYYY"); %> - <%= moments(el2.leave_log_date_end).format("DD/MM/YYYY"); %></td>
+                        <td><%= day_count %></td>
+                        <td><button class="btn btn-small btn-success"><%= el2.leave_log_status === 'pending' ? 'รออนุมัติ' : 'อนุมัติแล้ว' %></button></td>
+                        <td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal<%= el2.leave_log_id %>"><i class="fas fa-exclamation-circle"></i> ข้อมูลเพิ่มเติม</button>
+                            
+                            <div class="modal fade" id="myModal<%= el2.leave_log_id %>">
+                                <div class="modal-dialog">
+                                  <div class="modal-content">
+                              
+                                    <!-- Modal Header -->
+                                    <div class="modal-header">
+                                      <h4 class="modal-title"><i class="far fa-file"></i> รายละเอียดของคำขอ อนุมัติลา</h4>
+                                      <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    </div>
+                                    
+                                    <!-- Modal body -->
+                                    <div class="modal-body">
+                                      <p><i class="far fa-user"></i> &nbsp;ชื่อ สกุล&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;<%= el2.Name_Th %></p>
+                                      <hr class="mt-0">
+                                      <p><i class="fas fa-user-check"></i> ประเภทการลา&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;{{leaveType[<%= log_type2 %>].desc}}</p>
+                                      <hr class="mt-0">
+                                      <p><i class="far fa-address-book"></i> แผนก&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;<%= el2.Section_Desc %></p>
+                                      <hr class="mt-0">
+                                      <p><i class="far fa-file"></i> เหตุผลการลา&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;<%= el2.leave_log_detail %></p>
+                                      <hr class="mt-0">
+                                      
+                                      <p><i class="far fa-calendar-alt"></i> วันที่&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp; <%=moments(el2.leave_log_date_start).format("DD/MM/YYYY");  %> - <%= moments(el2.leave_log_date_end).format("DD/MM/YYYY"); %></p>
+                                     
+                                      <hr class="mt-0">
+                                      <p><i class="far fa-calendar-plus"></i> จำนวนวันลา&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;<%= day_count %> วัน</p>
+                                      <hr class="mt-0">
+                                      <p><i class="fas fa-mobile-alt"></i> &nbsp;การติดต่อ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;</p>
+                                      <hr class="mt-0">
+                                      <p><i class="fas fa-circle-notch"></i> สถานะ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;<span class="btn btn-success"><%= el2.leave_log_status === 'pending' ? 'รออนุมัติ' : 'อนุมัติแล้ว' %></span></p>
+                                      <hr class="mt-0">
+                                      <p><i class="fas fa-upload"></i> ไฟล์แนบ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;<span class="btn btn-danger btn-sm ">
+                                        <% if(el2.leave_log_img === 'no_picture'){ %>
+                                            ไม่มีไฟล์แนบ
+                                          <% }else { %>
+                                            <a href="/upload_image/<%= el2.leave_log_img %>" target="_blank">ดาวโหลดไฟล์แนบ</a>
+                                          <% } %>
+                                      </span></p>
+                                    </div>
+            
+                                  </div>
+                                </div>
+                              </div></td>
+                    </tr>
+                    
+                <% }%> <!-- Else -->
+
+                <% }); %>
+            </tbody>
+        </table>
+        </div> <!-- card body -->
+        
+        
+        </div> <!-- card  -->
+</template>
+
+    </div>
+</div>
+<%}else{%>
+    <div class="row mt-2">
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo"><i class="fas fa-file-signature"></i> เพิ่มคำขอลา</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+    
+<%} %>
+
+
+
+<div class="row">
+    <div class="col-md-12">
+        <form action="/add" method="post">
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel"><i class="	far fa-edit"></i> เพิ่มคำขอ อนุมัติการลา</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      
+                        <label class="m-0">ประเภทการลา</label>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                              <label class="input-group-text" for="inputGroupSelect01"><i class="fas fa-user-check"></i></label>
+                            </div>
+                            <select class="custom-select" id="inputGroupSelect01" name="leave_type" required>
+                                <option value="" selected disabled>เลือก...</option>
+                                <option value="01">ลาป่วย(มีใบรับรองแพทย์)</option>
+                                <option value="02">ลาป่วย(ไม่มีใบรับรองแพทย์)</option>
+                                <option value="03">ลากิจ</option>
+                                <option value="04">ลาพักร้อน</option>
+                                <option value="07">ลาอื่นๆ</option>
+                            </select>
+                          </div>
+                          <label class="m-0">แผนก</label>
+                          <div class="input-group mb-3">
+                              <div class="input-group-prepend">
+                                <label class="input-group-text" for="inputGroupSelect01"><i class="far fa-address-book"></i></label>
+                              </div>
+                              <select class="custom-select" id="inputGroupSelect01" name="section">
+                                  <option value="<%= value[0].Section_Desc %>" selected><%= value[0].Section_Desc %></option>
+                              </select>
+                            </div>
+
+                            <label class="m-0">รายละเอียด / เหตุผลการลา</label>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon3"><i class="far fa-file"></i></span>
+                                </div>
+                                <textarea class="form-control" id="basic-url" aria-describedby="basic-addon3" rows="3" name="detail" required></textarea>
+                            </div>
+
+                            <div class="input-group mb-3">
+                                <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" value="full_day" v-model="picked" v-bind:checked="checked">
+                                <label class="form-check-label" for="inlineRadio1">เต็มวัน</label>
+                              </div>
+                              <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" value="half_day" v-model="picked">
+                                <label class="form-check-label" for="inlineRadio2">ครึ่งวัน</label>
+                              
+                                <template v-if="picked === 'half_day'">
+                                <select name="day_attr" id="" class="form-check-input ml-1">
+                                  <option value="morning">เช้า</option>
+                                  <option value="afternoon">บ่าย</option>
+                                </select>
+                              </template>
+                              
+                              </div>
+                            </div>
+                            
+                            <label class="m-0">จากวันที่</label>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon3"><i class="far fa-calendar-alt"></i></span>
+                                </div>
+                                <input class="form-control" type="date"   id="example-date-input" name="leave_start_date" required>
+                            </div>
+                            <template v-if="picked === 'full_day'">
+                            <label class="m-0">ถึงวันที่</label>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon3"><i class="far fa-calendar-alt"></i></span>
+                                </div>
+                                <input class="form-control" type="date"  id="example-date-input" name="leave_end_date" v-on:click="changeMessage()" v-model="start_date" required>
+                            </div>
+                            </template>
+                            <label class="m-0">ไฟล์แนบ</label>
+                            <div class="input-group mb-0">
+                                <div class="input-group-prepend">
+                                <a class="btn btn-info btn-sm" v-on:click="showWindow()">Upload</a>
+                                </div>
+                            </div>
+                            <label class="m-1 text-success">อัปโหลดไฟล์ jpg, jpeg, png, pdf, gif ขนาดไม่เกิน 2 MB</label>
+                      
+                    </div>
+                    <div class="modal-footer">
+                        <input type="submit" value="บันทึก" class="btn btn-primary">
+                        
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                  </div> <!-- model dialog-->
+                </div> <!-- primary modal-->
+
+                <!-- ------------------------------------------------- ------------------------------------------------- ------------------------------------------------- -->
+                
+                
+
+              </div>
+        </form>
+    </div>
+</div>
+</div>
+
+
+
+<%- include('partials/footer.ejs') %>

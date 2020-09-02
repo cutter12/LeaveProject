@@ -1,0 +1,151 @@
+<%- include('partials/header.ejs') %>
+<nav class="navbar navbar-expand-lg navbar-light navbar-laravel">
+  <div class="container">
+      <a class="navbar-brand" href="#">LEAVEONLINE</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav ml-auto">
+              <li class="nav-item">
+                <a class="nav-link btn btn-danger text-light" href="/logout">ออกจากระบบ</a>
+              </li>
+          </ul>
+
+      </div>
+  </div>
+</nav>
+<div class="container" id="app">
+  <div class="row mt-2">
+      <div class="col-md-12">
+          <div class="card shadow bg-seconday text-dark">
+            
+            <div class="card-header m-0"><h6><i class="far fa-address-card"></i> ข้อมูลผู้เข้าระบบ</h6></div>
+            <div class="card-body">
+                <strong>รหัสพนักงาน</strong><span> <%= value[0].Emp_ID %> </span> <strong>ชื่อ</strong><span> <%= value[0].Name_Th %></span><strong> แผนก</strong><span> <%= value[0].Section_Desc %></span>                
+            </div>
+            
+          </div>
+        </div>
+  </div>
+  <hr>
+  <div class="row mt-2">
+    <div class="col-md-3 text-center"></div>
+    <div class="col-md-6 text-center">
+      <p class="display-4">คุณยังไม่มีคำขอลา</p>
+      <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo"><i class="fas fa-file-signature"></i> เพิ่มคำขอลา</button>
+    </div>
+    <div class="col-md-3 text-center"></div>
+  </div>
+  
+
+
+
+  <div class="row mt-3">
+    <div class="col-md-12">
+        <!-- form section-->
+        
+        
+        <form action="/add" method="post">
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel"><i class="	far fa-edit"></i> เพิ่มคำขอ อนุมัติการลา</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      
+                        <label class="m-0">ประเภทการลา</label>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                              <label class="input-group-text" for="inputGroupSelect01"><i class="fas fa-user-check"></i></label>
+                            </div>
+                            <select class="custom-select" id="inputGroupSelect01" name="leave_type" required>
+                                <option value="" selected disabled>เลือก...</option>
+                                <option value="01">ลาป่วย(มีใบรับรองแพทย์)</option>
+                                <option value="02">ลาป่วย(ไม่มีใบรับรองแพทย์)</option>
+                                <option value="03">ลากิจ</option>
+                                <option value="04">ลาพักร้อน</option>
+                                <option value="07">ลาอื่นๆ</option>
+                            </select>
+                          </div>
+                          <label class="m-0">แผนก</label>
+                          <div class="input-group mb-3">
+                              <div class="input-group-prepend">
+                                <label class="input-group-text" for="inputGroupSelect01"><i class="far fa-address-book"></i></label>
+                              </div>
+                              <select class="custom-select" id="inputGroupSelect01" name="section">
+                                  <option value="<%= value[0].Section_Desc %>" selected><%= value[0].Section_Desc %></option>
+                              </select>
+                            </div>
+
+                            <label class="m-0">รายละเอียด / เหตุผลการลา</label>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon3"><i class="far fa-file"></i></span>
+                                </div>
+                                <textarea class="form-control" id="basic-url" aria-describedby="basic-addon3" rows="3" name="detail" required></textarea>
+                            </div>
+
+                            <div class="input-group mb-3">
+                                <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" value="full_day" v-model="picked" checked>
+                                <label class="form-check-label" for="inlineRadio1">เต็มวัน</label>
+                              </div>
+                              <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" value="half_day" v-model="picked">
+                                <label class="form-check-label" for="inlineRadio2">ครึ่งวัน</label>
+                              
+                                <template v-if="picked === 'half_day'">
+                                <select name="" id="" class="form-check-input ml-1">
+                                  <option value="เช้า">เช้า</option>
+                                  <option value="บ่าย">บ่าย</option>
+                                </select>
+                              </template>
+                              
+                              </div>
+                            </div>
+                            
+                            <label class="m-0">วันเริ่มต้นการลา</label>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon3"><i class="far fa-calendar-alt"></i></span>
+                                </div>
+                                <input class="form-control" type="date"   id="example-date-input" name="leave_start_date"  required>
+                            </div>
+                            <template v-if="picked === 'full_day'">
+                            <label class="m-0">วันสิ้นสุดการลา</label>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon3"><i class="far fa-calendar-alt"></i></span>
+                                </div>
+                                <input class="form-control" type="date"  id="example-date-input" name="leave_end_date" v-on:click="changeMessage()" v-model="start_date">
+                            </div>
+                            </template>
+                            <label class="m-0">ไฟล์แนบ</label>
+                            <div class="input-group mb-0">
+                                <div class="input-group-prepend">
+                                <a class="btn btn-info btn-sm" v-on:click="showWindow()">Upload</a>
+                                </div>
+                            </div>
+                            <label class="m-1 text-success">อัปโหลดไฟล์ jpg, jpeg, png, pdf, gif ขนาดไม่เกิน 2 MB</label>
+                      
+                    </div>
+                    <div class="modal-footer">
+                        <input type="submit" value="บันทึก" class="btn btn-primary">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+        </form>
+        
+    </div>
+</div>
+</div>
+
+<%- include('partials/footer.ejs') %>

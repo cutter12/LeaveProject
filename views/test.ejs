@@ -1,0 +1,36 @@
+<%- include('partials/header.ejs') %>
+<div class="container">
+<div id="app">
+
+รหัสพนักงาน<input type="text" name="" id="" v-model="id" maxlength="4" size="4">
+
+ระหว่างวันที่ <input type="date" name="" id="" v-model="date_from"> ถึง วันที่ <input type="date" name="" id="" v-model="date_to" >
+<button class="btn btn-primary" v-on:click="selectDate(id,date_from,date_to)">แสดงข้อมูล</button>
+
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>วันที่บันทึก</th>
+        <th>ประเภทการลา</th>
+        <th>วันที่เริ่มลา</th>
+        <th>วันที่สิ้นสุดการลา</th>
+        <th>หมายเหตุ</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr v-for="dates in date">
+        <td >{{dates.Create_Date}}</td>
+        <td >{{dates.Absent_Desc}}</td>
+        <td >{{dates.Date_from}}</td>
+        <td >{{dates.Date_To}}</td>
+        <td >{{dates.Comment}}</td>
+    </tr>
+    </tbody>
+</table>
+
+
+</div>
+
+</div>
+<%- include('partials/footer.ejs') %>

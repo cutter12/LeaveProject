@@ -1,0 +1,290 @@
+
+<%- include('partials/header.ejs') %>
+<div id="app">
+<nav class="navbar navbar-expand-lg navbar-light navbar-laravel">
+    <div class="container">
+        <a class="navbar-brand" href="#">LEAVEONLINE</a>
+        
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item mr-1">
+                    <button type="button" class="nav-lilnk btn btn-primary text-light" data-toggle="modal" data-target="#myModal" > ประวัติการลา</button>
+
+                    <div class="modal fade" id="myModal">
+                        <div class="modal-dialog mw-100 w-75">
+                          <div class="modal-content">
+                      
+                            <!-- Modal Header -->
+                            <div class="modal-header">
+                              <h4 class="modal-title"><i class="far fa-file"></i> ประวัติการลาพนักงานในแผนก</h4>
+                              <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+                            
+                            <!-- Modal body -->
+                            <div class="modal-body">
+                            <div>
+                                <div class="form-row">
+                                    <div class="col">
+                                        <label for="exampleFormControlSelect1">รหัสพนักงาน</label>
+                                        <select class="form-control" id="exampleFormControlSelect1" v-model="id" v-on:change="onChange()">
+                                        <option selected disabled >เลือก</option>
+                                        <option v-for="emp in emp_name" >{{emp.Emp_ID}}</option>
+                                        
+                                        </select>
+                                    </div>
+                                    <div class="col">
+                                        <label for="exampleFormControlSelect1">ปี</label>
+                                        <select name="" id="" class="form-control" v-model="attendance_year">
+                                            <option selected>2020</option>
+                                            <option>2019</option>
+                                            <option>2018</option>
+                                            <option>2017</option>
+                                            <option>2016</option>
+                                            <option>2015</option>
+                                            <option>2014</option>
+                                            <option>2013</option>
+                                            <option>2012</option>
+                                            <option>2011</option>
+                                            <option>2010</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                
+                                <div class="form-row mt-3">
+                                    <div class="col">
+                                        <button class="btn btn-primary btn-sm" v-on:click="selectDate(id,attendance_year)">แสดง</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <hr>
+                            <ul v-for="(item,index) in date">
+                                <div class="text-left" v-if="index == 1"><strong>ชื่อพนักงาน</strong> {{item.Name_Th}} <strong>แผนก</strong> {{item.Section_Desc}}
+                                <strong>จำนวนวันลาทั้งหมด</strong>{{htmlContent - 2}}</div>
+                            </ul>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>วันที่บันทึก</th>
+                                        <th>ประเภทการลา</th>
+                                        <th>วันที่เริ่มลา</th>
+                                        <th>วันที่สิ้นสุด</th>
+                                        <th>จำนวนวัน</th>
+                                        <th>หมายเหตุ</th>
+                                    </tr>
+                                </thead>
+                                
+                                <tbody>
+                                    <tr v-for="dates in date">
+                                        <!-- add slice for slice date -->
+                                        <td>{{dates.Create_Date[8]}}{{dates.Create_Date[9]}}/{{dates.Create_Date[5]}}{{dates.Create_Date[6]}}/{{dates.Create_Date[0]}}{{dates.Create_Date[1]}}{{dates.Create_Date[2]}}{{dates.Create_Date[3]}}</td>
+                                        <td>{{dates.Absent_Desc}}</td>
+                                        <td>{{dates.Date_from[8]}}{{dates.Date_from[9]}}/{{dates.Date_from[5]}}{{dates.Date_from[6]}}/{{dates.Date_from[0]}}{{dates.Date_from[1]}}{{dates.Date_from[2]}}{{dates.Date_from[3]}}</td>
+                                        <td>{{dates.Date_To[8]}}{{dates.Date_To[9]}}/{{dates.Date_To[5]}}{{dates.Date_To[6]}}/{{dates.Date_To[0]}}{{dates.Date_To[1]}}{{dates.Date_To[2]}}{{dates.Date_To[3]}}</td>
+                                        <td>{{dates.Sum_Date}}</td>
+                                        <td>{{dates.Comment}}</td>
+                                        
+                                    </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link btn btn-danger text-light" href="/logout">ออกจากระบบ</a>
+                </li>
+            </ul>
+
+        </div>
+    </div>
+</nav>
+<div class="container" >
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card shadow bg-seconday text-dark">
+                <div class="card-header m-0"><h6><i class="far fa-address-card"></i> ข้อมูลผู้เข้าระบบ</h6></div>
+                <div class="card-body">
+                    <strong>รหัสพนักงาน</strong><span> <%= managers[0].Emp_ID %> </span> <strong>ชื่อ</strong><span> <%= managers[0].Name_Th %></span><strong> แผนก</strong><span> <%= managers[0].Section_Desc %>{{leaveType.id}}</span>
+                    
+                </div>
+            </div>  
+        </div>
+    <div class="row mt-2">
+        <div class="col-md-4 ">
+            
+        </div>
+        <div class="col-md-4"></div>
+        <div class="col-md-4"></div>
+    </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-md-4">
+             
+        </div>
+            <% var pending_count = 0; %>
+            <% var approved_count = 0; %>
+            <% var unapprove = 0; %>
+            <% members.forEach(ele => { %>
+                <% if(ele.leave_log_status === 'pending') { %>
+                    
+                    <% pending_count += 1; %>
+
+                <% }else if(ele.leave_log_status === 'approved') { %>
+
+                    <% approved_count += 1 %>
+
+                <% }else{ %>
+
+                <% unapprove += 1; %>
+
+                <% } %>
+            <% }) %>
+        <div class="col-md-4">
+            <div class="card shadow bg-info text-white">
+                <div class="card-header"><h4><i class="fas fa-sync"></i> รอการอนุมัติ</h4></div>
+                <div class="card-body">
+                    
+                    <h4 class="text-right m-0">จำนวน <%= pending_count %></h4>
+                </div>
+            </div>  
+        </div>
+        
+        <div class="col-md-4">
+            
+        </div>
+    </div>
+
+
+
+<% if(members.length !== 0) { %>
+<div class="row">
+    <div class="col-md-12 mt-2">
+        
+        <table class="table table-bordered mt-2 table-sm shadow-sm">
+            <thead>
+                
+                <th>ลบ</th>
+                <th>วันที่ทำรายการ</th>
+                <th>ผู้ลา</th>
+                <th>ประเภทการลา</th>
+                <th>วันที่ลา</th>
+                <th>จำนวนวัน</th>
+                <th>สถานะ</th>
+                <th>อื่นๆ</th>
+            </thead>
+            <tbody>
+                <% members.forEach(el => { %>
+                    <%
+                        var a = moments(el.leave_log_date_start);
+                        var b = moments(el.leave_log_date_end);
+                        var day_count = b.diff(a,'days')+1;
+                    %>
+                    <tr>
+                        <!-- Delete Button -->
+                        <td>
+                            <form action="/delete/<%= el.leave_log_id %>?_method=DELETE" method="post">
+                                <input type="submit" value="ลบ" class="btn btn-danger">
+                            </form>
+                        </td>
+                        <td><%= moments(el.leave_log_datestamp).format("DD/MM/YYYY"); %></td>
+                        <td><%= el.Name_Th %></td>
+                        <% var log_type_manager = el.leave_log_type - 1 %>
+                        <td>{{leaveType[<%= log_type_manager %>].desc}}</td>
+                        <td><%= moments(el.leave_log_date_start).format("DD/MM/YYYY"); %> - <%= moments(el.leave_log_date_end).format("DD/MM/YYYY"); %></td>
+                        <td><%= day_count %></td>
+                        <td><input type="button" value="<%= el.leave_log_status === 'pending' ? 'รออนุมัติ' : 'อนุมัติแล้ว' %>" class="btn btn-warning btn-small" ></td>
+                        <td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal<%= el.leave_log_id %>"><i class="fas fa-exclamation-circle"></i> ข้อมูลเพิ่มเติม</button>
+                           
+                           
+                            <form action="/update/<%= el.Emp_ID %>/<%= el.leave_log_id %>?_method=PUT" method="post"> <!-- UP Date action หลังจากอัพเดทให้ส่งเมลว่าอนุมัติแล้ว-->
+                                
+                            <div class="modal fade" id="myModal<%= el.leave_log_id %>">
+                                <div class="modal-dialog">
+                                  <div class="modal-content">
+                              
+                                    <!-- Modal Header -->
+                                    <div class="modal-header">
+                                      <h4 class="modal-title"><i class="far fa-file"></i> รายละเอียดของคำขอ อนุมัติลา</h4>
+                                      <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    </div>
+                                    
+                                    <!-- Modal body -->
+                                    <div class="modal-body">
+                                      <p><i class="far fa-user"></i> &nbsp;ชื่อ สกุล&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;<%= el.Name_Th %></p>
+                                      <hr class="mt-0">
+                                      <p><i class="fas fa-user-check"></i> ประเภทการลา&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;{{leaveType[<%= log_type_manager %>].desc}}</p>
+                                      <hr class="mt-0">
+                                      <p><i class="far fa-address-book"></i> แผนก&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;<%= el.Section_Desc %></p>
+                                      <hr class="mt-0">
+                                      <p><i class="far fa-file"></i> เหตุผลการลา&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;<%= el.leave_log_detail %></p>
+                                      <hr class="mt-0">
+                                      
+                                      <p><i class="far fa-calendar-alt"></i> วันที่&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp; <%=moments(el.leave_log_date_start).format("DD/MM/YYYY");  %> - <%= moments(el.leave_log_date_end).format("DD/MM/YYYY"); %></p>
+                                      
+                                      <hr class="mt-0">
+                                      <p><i class="far fa-calendar-plus"></i> จำนวนวันลา&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;<%= day_count %> วัน</p>
+                                      <input type="hidden" name="day_count" value="<%= day_count %>">
+                                      <hr class="mt-0">
+                                      <p><i class="fas fa-mobile-alt"></i> &nbsp;การติดต่อ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;</p>
+                                      <hr class="mt-0">
+                                      <p><i class="fas fa-circle-notch"></i> สถานะ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;<span class="btn btn-warning"><%= el.leave_log_status === 'pending' ? 'รออนุมัติ' : 'อนุมัติแล้ว' %></span></p>
+                                      <hr class="mt-0">
+                                      <p><i class="fas fa-upload"></i> ไฟล์แนบ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;<span class="btn btn-danger btn-sm ">
+                                        <% if(el.leave_log_img === 'no_picture'){ %>
+                                            ไม่มีไฟล์แนบ
+                                          <% }else { %>
+                                            <a href="/upload_image/<%= el.leave_log_img %>" target="_blank" style="text-decoration: none;color:white">ดาวโหลดไฟล์แนบ</a>
+                                          <% } %>
+                                      </span></p>
+
+                                        
+                                    </div>
+                                   
+                                    <div class="modal-footer">
+                                        <h5 class="text-left"><input type="radio" name="manager_check" id="" v-model="check" value="approved"><span> อนุมัติ</span> <input type="radio" name="manager_check" id="" v-model="check" value="unapprove"><span> ไม่อนุมัติ</span> </h5>
+                    
+                                        <input type="submit" value="บันทึก" class="btn btn-primary">
+                                    </div>
+                                
+
+                                  </div>
+                                </form>
+                                </div>
+                              </div></td>
+                    </tr>
+                    
+
+                <% }); %>
+            </tbody>
+        </table>
+    </div>
+</div>
+<%}else{%>
+<div class="row mt-2">
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+        <div class="card shadow-sm">
+            <div class="card-body text-center">
+                <h5>ยังไม่มีคำขออนุมัติ</h5>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4"></div>
+</div>
+
+<% }%>
+</div>
+
+
+
+
+</div>
+
+<%- include('partials/footer.ejs') %>
